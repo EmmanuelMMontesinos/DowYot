@@ -11,19 +11,27 @@ def dowload(url, path, ext, playlist):
     if playlist:
         playlist_generate = Playlist(url)
         nombre_lista = playlist_generate.title
+        print(f"🚩 Descargando Lista: {nombre_lista}")
+        total = len(playlist_generate.video_urls)
+        ciclo = 0
         for video_url in playlist_generate.video_urls:
+            ciclo += 1
             yt = YouTube(str(video_url))
 
             video = yt.streams.filter(only_audio=only_audio,
                                       audio_codec="").first()
+            nombre_archivo = video.default_filename[:-4]
+            print(f"⌛ Iniciando Descarga: {nombre_archivo}")
             destino = path
 
             salida = video.download(output_path=destino)
-            nombre_archivo = video.default_filename[:-4]
 
             nombre, extension = os.path.splitext(salida)
             audio = nombre + ext
             os.rename(salida, audio)
+            print(
+                f"✔️ Descarga Completada{nombre_archivo} ---> {ciclo}/{total}")
+        print(f"🏁 {nombre_lista} ha sido descargado en {path}")
         messagebox.showinfo(title="Descarga de Lista Completada",
                             message=f"{nombre_lista} ha sido descargado en {path}")
     else:
@@ -49,6 +57,7 @@ def select_path(path_label):
 
 
 def make_window():
+    print("Programado por @emmanuelmmontesinos")
     window = Tk()
     window.title("DowYot")
     window.config(background="red")
