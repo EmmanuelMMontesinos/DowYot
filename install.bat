@@ -1,10 +1,6 @@
 @echo off
 
-REM Función para mostrar mensaje de error y pausar antes de salir
-:Error
-echo ERROR: %1
-pause
-exit /b 1
+
 
 REM Verificar si Python ya está instalado
 python --version 2>NUL
@@ -23,7 +19,7 @@ echo Instalando dependencias con Pipenv...
 pipenv install || call :Error "Error al instalar dependencias con Pipenv"
 
 REM Notificar al usuario que la instalación ha terminado
-echo Instalación completa.
+echo Instalacion completa.
 
 REM Pausa para que el usuario tenga la oportunidad de leer el mensaje antes de cerrar la ventana
 pause
