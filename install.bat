@@ -3,17 +3,14 @@
 
 
 REM Verificar si Python ya está instalado
-python --version 2>NUL
-IF %ERRORLEVEL% EQU 0 (
-    echo Python ya está instalado.
-) ELSE (
-    REM Descargar e instalar Python desde la página oficial
-    echo Descargando e instalando Python...
-    curl -o python-installer.exe https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe || call :Error "Error al descargar Python"
-    python-installer.exe /quiet TargetDir=C:\Python || call :Error "Error al instalar Python"
-    del python-installer.exe
-)
 
+REM Descargar e instalar Python desde la página oficial
+echo Descargando e instalando Python...
+curl -o python-installer.exe https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe || call :Error "Error al descargar Python"
+python-installer.exe /quiet TargetDir=C:\Python || call :Error "Error al instalar Python"
+del python-installer.exe
+
+pip install pipenv
 REM Instalar dependencias usando Pipenv
 echo Instalando dependencias con Pipenv...
 pipenv install || call :Error "Error al instalar dependencias con Pipenv"
