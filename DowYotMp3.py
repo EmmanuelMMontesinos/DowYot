@@ -31,9 +31,12 @@ def dowload(url, path, ext, playlist):
 
             nombre, extension = os.path.splitext(salida)
             audio = nombre + ext
-            os.rename(salida, audio)
-            print(
-                f"✔️ Descarga Completada {nombre_archivo} ---> {ciclo}/{total}")
+            try:
+                os.rename(salida, audio)
+                print(
+                    f"✔️ Descarga Completada {nombre_archivo} ---> {ciclo}/{total}")
+            except Exception as e:
+                print(f"Error: {e}")
         print(f"🏁 {nombre_lista} ha sido descargado en {path}")
         messagebox.showinfo(title="Descarga de Lista Completada",
                             message=f"{nombre_lista} ha sido descargado en {path}")
@@ -43,7 +46,7 @@ def dowload(url, path, ext, playlist):
         video = yt.streams.filter(only_audio=only_audio,
                                   audio_codec="").first()
         destino = path
-        print(f"⌛ Iniciando Descarga")
+        print("⌛ Iniciando Descarga")
         salida = video.download(output_path=destino)
         nombre_archivo = video.default_filename[:-4]
         print(
