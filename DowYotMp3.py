@@ -69,15 +69,14 @@ def make_window():
     window.title("DowYot")
     window.config(background="LightGray")
     window.iconbitmap(default="icono.ico")
-    window.geometry("300x190")
+    window.geometry("410x115")
     window.resizable(False, False)
-    style = ttk.Style()
-    style.configure('Custom.TLabelframe')
+    frame = ttk.Frame(window, border=5)
     frame_url = ttk.LabelFrame(
-        window, padding=6, text="URL", style='Custom.TLabelframe')
+        frame, padding=6, text="URL")
     frame_path = ttk.LabelFrame(
-        window, padding=6, text="Carpeta", style="Custom.TLabelframe")
-    frame_dw = ttk.Label(window, padding=6)
+        frame, padding=6, text="Carpeta")
+    frame_dw = ttk.Label(frame, padding=6)
     url = ttk.Entry(frame_url)
     url.pack(side="left", expand=True)
     selected_ext = StringVar()
@@ -89,28 +88,30 @@ def make_window():
     mp3.pack(side="right")
     mp4.pack(side="right")
     frame_playlist = ttk.LabelFrame(
-        window, text="¿Es una Playlist?", padding=2)
+        frame, text="¿Es una Playlist?", padding=4, borderwidth=2)
     playlist = BooleanVar(window, value=False)
     ttk.Checkbutton(
         frame_playlist, text="Si, el link es una Playlist", variable=playlist).pack()
     path_label = ttk.Entry(frame_path)
     path_label.pack(side="left")
     style = ttk.Style(window)
+    style_b = ttk.Style()
+    style_b.configure("Custom.TButton", bg="LawnGreen", borderwidth=20)
     style.configure(window, background="LightGray")
     ttk.Button(frame_path, text="Carpeta Destino",
                command=lambda: select_path(path_label)).pack()
-    dowloader = ttk.Button(frame_dw, text="Descargar",
+    dowloader = ttk.Button(frame_dw, text="Descargar", padding=(35, 10, 40, 10), style="Custom.TButton",
                            command=lambda: dowload(url.get(),
-                                                   path=path_label.get(), ext=selected_ext.get(), playlist=playlist.get()), padding=2)
-
+                                                   path=path_label.get(), ext=selected_ext.get(), playlist=playlist.get()))
     style_dw = ttk.Style(dowloader)
     style_dw.configure(dowloader, background="LightGray")
-    dowloader.grid(padx=1, pady=1, row=0, column=1)
+    dowloader.grid(row=0, column=1)
 
-    frame_url.pack(expand=True)
-    frame_playlist.pack()
-    frame_path.pack(expand=True)
-    frame_dw.pack(expand=True)
+    frame_url.grid(row=0, column=0)
+    frame_path.grid(row=1, column=0)
+    frame_playlist.grid(row=0, column=1, padx=5)
+    frame_dw.grid(row=1, column=1)
+    frame.grid(row=0, column=0)
     window.mainloop()
 
 
