@@ -19,19 +19,19 @@ def dowload(url, path, ext, playlist):
         ciclo = 0
         for video_url in playlist_generate.video_urls:
             ciclo += 1
-            yt = YouTube(str(video_url))
-
-            video = yt.streams.filter(only_audio=only_audio,
-                                      audio_codec="").first()
-            nombre_archivo = video.default_filename[:-4]
-            print(f"⌛ Iniciando Descarga: {nombre_archivo}")
-            destino = path
-
-            salida = video.download(output_path=destino)
-
-            nombre, extension = os.path.splitext(salida)
-            audio = nombre + ext
             try:
+                yt = YouTube(str(video_url))
+
+                video = yt.streams.filter(only_audio=only_audio,
+                                          audio_codec="").first()
+                nombre_archivo = video.default_filename[:-4]
+                print(f"⌛ Iniciando Descarga: {nombre_archivo}")
+                destino = path
+
+                salida = video.download(output_path=destino)
+
+                nombre, extension = os.path.splitext(salida)
+                audio = nombre + ext
                 os.rename(salida, audio)
                 print(
                     f"✔️ Descarga Completada {nombre_archivo} ---> {ciclo}/{total}")
