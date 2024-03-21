@@ -41,6 +41,7 @@ def dowload(url, path, ext, playlist):
                 nombre, extension = os.path.splitext(salida)
                 audio = nombre + ext
                 if only_audio:
+                    print("♫ Convirtiendo a mp3")
                     mp4_to_mp3(salida, audio)
                 print(
                     f"✔️ Descarga Completada {nombre_archivo} ---> {ciclo}/{total}")
