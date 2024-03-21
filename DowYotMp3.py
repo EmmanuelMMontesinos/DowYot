@@ -1,6 +1,14 @@
 import os
 from pytube import YouTube, Playlist
 from tkinter import ttk, Tk, messagebox, filedialog, StringVar, BooleanVar
+from moviepy.editor import AudioFileClip
+
+
+def mp4_to_mp3(mp4, mp3):
+    audio_clip = AudioFileClip(mp4)
+    audio_clip.write_audiofile(mp3)
+    audio_clip.close()
+    os.remove(mp4)
 
 
 def dowload(url, path, ext, playlist):
@@ -22,8 +30,8 @@ def dowload(url, path, ext, playlist):
             try:
                 yt = YouTube(str(video_url))
 
-                video = yt.streams.filter(only_audio=only_audio,
-                                          audio_codec="").first()
+                video = yt.streams.filter(
+                    only_audio=only_audio, audio_codec='mp4a.40.2').first()
                 nombre_archivo = video.default_filename[:-4]
                 print(f"⌛ Iniciando Descarga: {nombre_archivo}")
                 destino = path
@@ -32,7 +40,8 @@ def dowload(url, path, ext, playlist):
 
                 nombre, extension = os.path.splitext(salida)
                 audio = nombre + ext
-                os.rename(salida, audio)
+                if only_audio:
+                    mp4_to_mp3(salida, audio)
                 print(
                     f"✔️ Descarga Completada {nombre_archivo} ---> {ciclo}/{total}")
             except Exception as e:
@@ -43,8 +52,8 @@ def dowload(url, path, ext, playlist):
     else:
         yt = YouTube(str(url))
 
-        video = yt.streams.filter(only_audio=only_audio,
-                                  audio_codec="").first()
+        video = yt.streams.filter(
+            only_audio=only_audio, audio_codec='mp4a.40.2').first()
         destino = path
         print("⌛ Iniciando Descarga")
         salida = video.download(output_path=destino)
@@ -53,7 +62,9 @@ def dowload(url, path, ext, playlist):
             f"✔️ Descarga Completada {nombre_archivo}")
         nombre, extension = os.path.splitext(salida)
         audio = nombre + ext
-        os.rename(salida, audio)
+        if only_audio:
+            print("♫ Convirtiendo a mp3")
+            mp4_to_mp3(salida, audio)
         messagebox.showinfo(title=f"Descarga {ext} Completada",
                             message=f"{nombre_archivo} ha sido descargado en {path}")
 

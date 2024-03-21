@@ -14,8 +14,9 @@ pip install pipenv
 REM Instalar dependencias usando Pipenv
 echo Instalando dependencias con Pipenv...
 pipenv install || call :Error "Error al instalar dependencias con Pipenv"
-echo instalando dependencias: Pytube
+echo instalando dependencias: Pytube, moviepy
 pip install pytube
+pip install moviepy
 echo Pytube instalado
 REM Notificar al usuario que la instalación ha terminado
 echo Instalacion completa.
