@@ -1,6 +1,6 @@
 # Aplicación para descargar Vídeos de YouTube en Vídeo o Solo Audio
 
-![DowYot](image.png)
+![alt text](image.png)
 
 ## Instalación en Windows
 
