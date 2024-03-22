@@ -14,6 +14,7 @@ del image.png
 
 pip uninstall pytube
 pip uninstall moviepy
+pip ininstall ttkbootstrap
 
 echo Desistalado, puede cerrar el terminal y borrar la carpeta.
 

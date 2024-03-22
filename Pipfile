@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pytube = "*"
 moviepy = "*"
+ttkbootstrap = "*"
 
 [dev-packages]
 

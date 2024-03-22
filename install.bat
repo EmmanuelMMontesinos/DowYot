@@ -17,6 +17,7 @@ pipenv install || call :Error "Error al instalar dependencias con Pipenv"
 echo instalando dependencias: Pytube, moviepy
 pip install pytube
 pip install moviepy
+pip install ttkbootstrap
 echo Pytube instalado
 REM Notificar al usuario que la instalación ha terminado
 echo Instalacion completa.

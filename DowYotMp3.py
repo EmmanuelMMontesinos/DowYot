@@ -2,6 +2,7 @@ import os
 from pytube import YouTube, Playlist
 from tkinter import ttk, Tk, messagebox, filedialog, StringVar, BooleanVar
 from moviepy.editor import AudioFileClip
+from ttkbootstrap import Style
 
 
 def mp4_to_mp3(mp4, mp3):
@@ -79,10 +80,12 @@ def make_window():
     print("Programado por @emmanuelmmontesinos")
     window = Tk()
     window.title("DowYot")
-    window.config(background="LightGray")
+    # window.config(background="LightGray")
     window.iconbitmap(default="icono.ico")
-    window.geometry("410x115")
+    window.geometry("430x125")
     window.resizable(False, False)
+    style_all = Style(theme="litera")
+    style_all.theme_use("litera")
     frame = ttk.Frame(window, border=5)
     frame_url = ttk.LabelFrame(
         frame, padding=6, text="URL")
@@ -106,21 +109,15 @@ def make_window():
         frame_playlist, text="Si, el link es una Playlist", variable=playlist).pack()
     path_label = ttk.Entry(frame_path)
     path_label.pack(side="left")
-    style = ttk.Style(window)
-    style_b = ttk.Style()
-    style_b.configure("Custom.TButton", bg="LawnGreen", borderwidth=20)
-    style.configure(window, background="LightGray")
     ttk.Button(frame_path, text="Carpeta Destino",
                command=lambda: select_path(path_label), cursor="hand2").pack()
-    dowloader = ttk.Button(frame_dw, text="Descargar", cursor="hand2", padding=(35, 10, 40, 10), style="Custom.TButton",
+    dowloader = ttk.Button(frame_dw, text="Descargar", cursor="hand2", padding=(50, 15, 50, 15),
                            command=lambda: dowload(url.get(),
                                                    path=path_label.get(), ext=selected_ext.get(), playlist=playlist.get()))
-    style_dw = ttk.Style(dowloader)
-    style_dw.configure(dowloader, background="LightGray")
     dowloader.grid(row=0, column=1)
 
     frame_url.grid(row=0, column=0)
-    frame_path.grid(row=1, column=0)
+    frame_path.grid(row=1, column=0, padx=2)
     frame_playlist.grid(row=0, column=1, padx=5)
     frame_dw.grid(row=1, column=1)
     frame.grid(row=0, column=0)
