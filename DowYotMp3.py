@@ -111,8 +111,8 @@ def make_window():
     style_b.configure("Custom.TButton", bg="LawnGreen", borderwidth=20)
     style.configure(window, background="LightGray")
     ttk.Button(frame_path, text="Carpeta Destino",
-               command=lambda: select_path(path_label)).pack()
-    dowloader = ttk.Button(frame_dw, text="Descargar", padding=(35, 10, 40, 10), style="Custom.TButton",
+               command=lambda: select_path(path_label), cursor="hand2").pack()
+    dowloader = ttk.Button(frame_dw, text="Descargar", cursor="hand2", padding=(35, 10, 40, 10), style="Custom.TButton",
                            command=lambda: dowload(url.get(),
                                                    path=path_label.get(), ext=selected_ext.get(), playlist=playlist.get()))
     style_dw = ttk.Style(dowloader)
