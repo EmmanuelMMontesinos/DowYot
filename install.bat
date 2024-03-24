@@ -7,7 +7,7 @@ del python-installer.exe
 
 echo -------------------------------------------
 echo Instalando Pip
-python -m ensurepip --upgrade
+python -m ensurepip --upgrade || call :Error "Error al instalar Pip"
 echo -------------------------------------------
 
 echo Instalando dependencias: Pytube, moviepy
