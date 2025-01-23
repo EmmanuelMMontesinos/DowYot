@@ -1,5 +1,0 @@
-flet==0.22.*
-pyperclip==1.8.2
-pytube==15.0.0
-moviepy==1.0.3
-
