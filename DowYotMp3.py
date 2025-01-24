@@ -3,7 +3,7 @@ from pytube import YouTube, Playlist
 from tkinter import ttk, Tk, messagebox, filedialog, StringVar, BooleanVar
 from moviepy.editor import AudioFileClip
 from ttkbootstrap import Style
-
+import yt_dlp
 
 def mp4_to_mp3(mp4, mp3):
     audio_clip = AudioFileClip(mp4)
@@ -12,63 +12,59 @@ def mp4_to_mp3(mp4, mp3):
     os.remove(mp4)
 
 
-def dowload(url, path, ext, playlist):
-    if ext == ".mp3":
-        only_audio = True
-    elif ext == ".mp4":
-        only_audio = False
-    else:
-        only_audio = True
-        ext = ".mp3"
-    if playlist:
-        playlist_generate = Playlist(url)
-        nombre_lista = playlist_generate.title
-        print(f"🚩 Descargando Lista: {nombre_lista}")
-        total = len(playlist_generate.video_urls)
-        ciclo = 0
-        for video_url in playlist_generate.video_urls:
-            ciclo += 1
-            try:
-                yt = YouTube(str(video_url))
+def download(url, path, ext, playlist):
+    """
+    Descarga un video o lista de reproducción desde YouTube usando yt-dlp.
 
-                video = yt.streams.filter(
-                    only_audio=only_audio, audio_codec='mp4a.40.2').first()
-                nombre_archivo = video.default_filename[:-4]
-                print(f"⌛ Iniciando Descarga: {nombre_archivo}")
-                destino = path
+    Args:
+        url (str): URL del video o lista de reproducción.
+        path (str): Ruta de destino para guardar los archivos.
+        ext (str): Extensión deseada ('.mp3' o '.mp4').
+        playlist (bool): Indica si es una lista de reproducción.
+    """
+    only_audio = ext == ".mp3"
 
-                salida = video.download(output_path=destino)
+    ydl_opts = {
+        "format": "bestaudio/best" if only_audio else "best", 
+        "outtmpl": os.path.join(path, "%(title)s.%(ext)s"),
+        "quiet": False,
+        "noplaylist": not playlist,
+    }
 
-                nombre, extension = os.path.splitext(salida)
-                audio = nombre + ext
-                if only_audio:
-                    print("♫ Convirtiendo a mp3")
-                    mp4_to_mp3(salida, audio)
-                print(
-                    f"✔️ Descarga Completada {nombre_archivo} ---> {ciclo}/{total}")
-            except Exception as e:
-                print(f"Error: {e}")
-        print(f"🏁 {nombre_lista} ha sido descargado en {path}")
-        messagebox.showinfo(title="Descarga de Lista Completada",
-                            message=f"{nombre_lista} ha sido descargado en {path}")
-    else:
-        yt = YouTube(str(url))
 
-        video = yt.streams.filter(
-            only_audio=only_audio, audio_codec='mp4a.40.2').first()
-        destino = path
-        print("⌛ Iniciando Descarga")
-        salida = video.download(output_path=destino)
-        nombre_archivo = video.default_filename[:-4]
-        print(
-            f"✔️ Descarga Completada {nombre_archivo}")
-        nombre, extension = os.path.splitext(salida)
-        audio = nombre + ext
-        if only_audio:
-            print("♫ Convirtiendo a mp3")
-            mp4_to_mp3(salida, audio)
-        messagebox.showinfo(title=f"Descarga {ext} Completada",
-                            message=f"{nombre_archivo} ha sido descargado en {path}")
+    if only_audio:
+        ydl_opts.update({
+            "postprocessors": [{
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "mp3",
+                "preferredquality": "192",
+            }],
+            "ffmpeg_location": "./Assets/ffmpeg/bin/ffmpeg.exe",
+        })
+
+    try:
+        
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            print(f"⌛ Iniciando descarga desde: {url}")
+            ydl.download([url])
+
+        if playlist:
+            print(f"🏁 Lista de reproducción descargada en: {path}")
+            messagebox.showinfo(
+                title="Descarga de Lista Completada",
+                message=f"La lista de reproducción ha sido descargada en {path}",
+            )
+        else:
+            print(f"✔️ Video descargado en: {path}")
+            messagebox.showinfo(
+                title=f"Descarga {ext} Completada",
+                message=f"El video ha sido descargado en {path}",
+            )
+    except Exception as e:
+        print(f"Error durante la descarga: {e}")
+        messagebox.showerror(
+            title="Error de Descarga",
+            message=f"Hubo un error durante la descarga: {e}",)
 
 
 def select_path(path_label):
@@ -112,7 +108,7 @@ def make_window():
     ttk.Button(frame_path, text="Carpeta Destino",
                command=lambda: select_path(path_label), cursor="hand2").pack()
     dowloader = ttk.Button(frame_dw, text="Descargar", cursor="hand2", padding=(50, 15, 50, 15),
-                           command=lambda: dowload(url.get(),
+                           command=lambda: download(url.get(),
                                                    path=path_label.get(), ext=selected_ext.get(), playlist=playlist.get()))
     dowloader.grid(row=0, column=1)
 
