@@ -8,15 +8,15 @@ import zipfile
 import yt_dlp
 
 current_dir = os.getcwd()
-ffmpeg_path = current_dir + "\\assets\\ffmpeg\\bin\\ffmpeg.exe"
+ffmpeg_path = current_dir + "\\Assets\\ffmpeg\\bin\\ffmpeg.exe"
 os.environ["IMAGEIO_FFMPEG_EXE"] = ffmpeg_path
 os.environ['PATH'] += ';' + ffmpeg_path
 
 
 def main(page: ft.Page):
     def copy_ffmpeg():
-        zip_file = current_dir + "\\assets\\ffmpeg.zip"
-        outpt = current_dir + "\\assets\\"
+        zip_file = current_dir + "\\Assets\\ffmpeg.zip"
+        outpt = current_dir + "\\Assets\\"
         with zipfile.ZipFile(zip_file, "r") as zip:
             zip.extractall(outpt)
 
@@ -171,4 +171,4 @@ def main(page: ft.Page):
     page.update()
 
 
-ft.app(main, assets_dir="assets")
+ft.app(main, assets_dir="Assets")
