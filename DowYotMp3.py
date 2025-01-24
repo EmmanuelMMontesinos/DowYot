@@ -1,6 +1,6 @@
 import os
 from pytube import YouTube, Playlist
-from tkinter import ttk, Tk, messagebox, filedialog, StringVar, BooleanVar
+from tkinter import ttk, Tk, messagebox, filedialog, StringVar, BooleanVar,Text, Scrollbar, END
 from moviepy.editor import AudioFileClip
 from ttkbootstrap import Style
 import yt_dlp
@@ -12,59 +12,72 @@ def mp4_to_mp3(mp4, mp3):
     os.remove(mp4)
 
 
-def download(url, path, ext, playlist):
-    """
-    Descarga un video o lista de reproducción desde YouTube usando yt-dlp.
+def download(url, path, ext=".mp4", playlist=False):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
-    Args:
-        url (str): URL del video o lista de reproducción.
-        path (str): Ruta de destino para guardar los archivos.
-        ext (str): Extensión deseada ('.mp3' o '.mp4').
-        playlist (bool): Indica si es una lista de reproducción.
-    """
-    only_audio = ext == ".mp3"
+    downloaded_file = {"filename": None}
+
+    def progress_hook(d):
+        if d["status"] == "finished":
+            downloaded_file["filename"] = d["filename"]
+
+    def log_message(message):
+        text_widget.insert(END, message + "\n")
+        text_widget.see(END)
+        text_widget.update()
+
+    root = Tk()
+    root.title("Progreso de la descarga")
+
+    text_widget = Text(root, wrap="word", height=20, width=60)
+    text_widget.pack(side="left", fill="both", expand=True)
+
+    scrollbar = Scrollbar(root, command=text_widget.yview)
+    scrollbar.pack(side="right", fill="y")
+
+    text_widget.configure(yscrollcommand=scrollbar.set)
+    log_message("⌛ Preparando descarga...")
 
     ydl_opts = {
-        "format": "bestaudio/best" if only_audio else "best", 
+        "format": "bv+ba/best",
+        "merge_output_format": "mp4",
         "outtmpl": os.path.join(path, "%(title)s.%(ext)s"),
-        "quiet": False,
+        "quiet": True,
         "noplaylist": not playlist,
+        "progress_hooks": [progress_hook],
+        "postprocessors": [{
+            "key": "FFmpegVideoConvertor",
+            "preferedformat": "mp4",
+        }],
+        "ffmpeg_location": "./Assets/ffmpeg/bin/ffmpeg.exe",
     }
 
-
-    if only_audio:
-        ydl_opts.update({
-            "postprocessors": [{
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": "192",
-            }],
-            "ffmpeg_location": "./Assets/ffmpeg/bin/ffmpeg.exe",
-        })
-
     try:
-        
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            print(f"⌛ Iniciando descarga desde: {url}")
+            log_message(f"⌛ Iniciando descarga desde: {url}")
             ydl.download([url])
-
+            mp4_file = downloaded_file["filename"]
+            mp4_file = os.path.splitext(mp4_file)[0][:-5] + ".mp4"
+            if mp4_file is None:
+                raise Exception("No se pudo obtener el archivo descargado.")
+            if ext == ".mp3":
+                mp3_file = os.path.splitext(mp4_file)[0] + ".mp3"
+                log_message(f"♫ Convirtiendo {mp4_file} a MP3...")
+                mp4_to_mp3(mp4_file, mp3_file)
+                log_message(f"✔️ Conversión completada: {mp3_file}")
         if playlist:
-            print(f"🏁 Lista de reproducción descargada en: {path}")
-            messagebox.showinfo(
-                title="Descarga de Lista Completada",
-                message=f"La lista de reproducción ha sido descargada en {path}",
-            )
+            final_message = f"🏁 Lista de reproducción descargada en: {path}"
+            log_message(final_message)
+            messagebox.showinfo("Descarga completada", final_message)
         else:
-            print(f"✔️ Video descargado en: {path}")
-            messagebox.showinfo(
-                title=f"Descarga {ext} Completada",
-                message=f"El video ha sido descargado en {path}",
-            )
+            final_message = f"✔️ Video descargado en máxima calidad en: {path}"
+            log_message(final_message)
+            messagebox.showinfo("Descarga completada", final_message)
     except Exception as e:
-        print(f"Error durante la descarga: {e}")
-        messagebox.showerror(
-            title="Error de Descarga",
-            message=f"Hubo un error durante la descarga: {e}",)
+        error_message = f"Error durante la descarga: {e}"
+        log_message(error_message)
+    root.mainloop()
 
 
 def select_path(path_label):
