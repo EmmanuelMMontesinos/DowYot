@@ -10,12 +10,10 @@ echo Instalando Pip
 python -m ensurepip --upgrade || call :Error "Error al instalar Pip"
 echo -------------------------------------------
 
-echo Instalando dependencias: Pytube, moviepy
-pip install pytube
-pip install moviepy
-pip install ttkbootstrap
+echo Instalando dependencias
+pip install -r requirements.txt
 echo -------------------------------------------
-echo Pytube, movipy instalados
+echo Dependencias instaladas
 
 REM Notificar al usuario que la instalación ha terminado
 echo Instalacion completa.
