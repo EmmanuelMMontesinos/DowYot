@@ -6,6 +6,15 @@ from pathlib import Path
 from moviepy.editor import AudioFileClip
 import zipfile
 import yt_dlp
+from Package_Update.Update import UpdateApp
+
+# Actualización
+name_app = "DowYot"
+version_app = "1.0.0"
+url_repository = "https://github.com/EmmanuelMMontesinos/DowYot"
+
+update_app = UpdateApp(name_app, version_app, url_repository)
+
 
 current_dir = os.getcwd()
 ffmpeg_path = current_dir + "\\Assets\\ffmpeg\\bin\\ffmpeg.exe"
@@ -14,6 +23,47 @@ os.environ['PATH'] += ';' + ffmpeg_path
 
 
 def main(page: ft.Page):
+    def close_dialog(dialog):
+        dialog.open = False
+        page.update()
+    def check_and_prompt_update():
+        try:
+            # Simula que hay una actualización disponible
+            if update_app.check_update():
+                # Crear el diálogo de confirmación
+                dialog = ft.AlertDialog(
+                    title=ft.Text("Actualización disponible"),
+                    content=ft.Text("Hay una nueva versión disponible. ¿Deseas actualizar?"),
+                    actions=[
+                        ft.TextButton("Sí", on_click=lambda _: perform_update(dialog)),
+                        ft.TextButton("No", on_click=lambda _: close_dialog(dialog)),
+                    ],
+                    actions_alignment="center",
+                )
+                page.dialog = dialog
+                dialog.open = True
+                page.update()
+        except Exception as e:
+            print(f"Error al verificar la actualización: {e}")
+
+    # Función para realizar la actualización
+    def perform_update(dialog):
+        try:
+            update_app.update()
+            close_dialog(dialog)
+            ft.AlertDialog(
+                title=ft.Text("Actualización completada"),
+                content=ft.Text("La aplicación se ha actualizado correctamente."),
+                actions=[ft.TextButton("Aceptar", on_click=lambda _: dialog.close())],
+            ).open = True
+            page.update()
+        except Exception as e:
+            ft.AlertDialog(
+                title=ft.Text("Error"),
+                content=ft.Text(f"Error al actualizar: {e}"),
+                actions=[ft.TextButton("Aceptar", on_click=lambda _: dialog.close())],
+            ).open = True
+            page.update()
     def copy_ffmpeg():
         zip_file = current_dir + "\\Assets\\ffmpeg.zip"
         outpt = current_dir + "\\Assets\\"
@@ -100,7 +150,8 @@ def main(page: ft.Page):
         except Exception as e:
             log_message(f"⛔ Error: {e}", is_error=True)
             field_output.update()
-
+    # Actualización
+    check_and_prompt_update()
     # UI
     layout = ft.Column(alignment=ft.MainAxisAlignment.CENTER, wrap=False)
     field_url = ft.Row(alignment=ft.MainAxisAlignment.END, wrap=False)
