@@ -93,8 +93,8 @@ def make_window():
     window.iconbitmap(default="icono.ico")
     window.geometry("430x125")
     window.resizable(False, False)
-    style_all = Style(theme="litera")
-    style_all.theme_use("litera")
+    style_all = Style(theme="superhero")
+    style_all.theme_use("superhero")
     frame = ttk.Frame(window, border=5)
     frame_url = ttk.LabelFrame(
         frame, padding=6, text="URL")
@@ -105,7 +105,7 @@ def make_window():
     url.pack(side="left", expand=True)
     selected_ext = StringVar()
     mp3 = ttk.Radiobutton(frame_url, text="MP3", variable=selected_ext,
-                          padding=2, value=(".mp3"))
+                          padding=2, value=(".mp3") )
     mp4 = ttk.Radiobutton(frame_url, text="MP4", variable=selected_ext,
                           padding=2, value=(".mp4"))
 
