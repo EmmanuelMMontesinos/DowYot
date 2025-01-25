@@ -119,7 +119,7 @@ def main(page: ft.Page):
             "merge_output_format": "mp4",
             "outtmpl": os.path.join(path, "%(title)s.%(ext)s"),
             "quiet": True,
-            "progress_hooks": [lambda d: update_progress_bar(d["_percent_str"])],
+            # "progress_hooks": [lambda d: update_progress_bar(d["_percent_str"])],
             "postprocessors": [{
                 "key": "FFmpegVideoConvertor",
                 "preferedformat": "mp3" if ext == ".mp3" else "mp4",
