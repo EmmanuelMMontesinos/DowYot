@@ -1,3 +1,0 @@
-name_app-DowYot
-version_app-2.0.0
-url_repository-https://github.com/EmmanuelMMontesinos/DowYot
