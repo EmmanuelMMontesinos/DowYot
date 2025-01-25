@@ -10,7 +10,7 @@ from Package_Update.Update import UpdateApp
 
 # Actualización
 name_app = "DowYot"
-version_app = "1.0.0"
+version_app = "2.0.0"
 url_repository = "https://github.com/EmmanuelMMontesinos/DowYot"
 
 update_app = UpdateApp(name_app, version_app, url_repository)
