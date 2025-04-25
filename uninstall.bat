@@ -12,9 +12,7 @@ del README.MD
 del image.png
 
 
-pip uninstall pytube
-pip uninstall moviepy
-pip ininstall ttkbootstrap
+pip uninstall -r requirements.txt -y
 
 echo Desistalado, puede cerrar el terminal y borrar la carpeta.
 

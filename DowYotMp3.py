@@ -1,9 +1,9 @@
 import os
 from pytube import YouTube, Playlist
-from tkinter import ttk, Tk, messagebox, filedialog, StringVar, BooleanVar
+from tkinter import ttk, Tk, messagebox, filedialog, StringVar, BooleanVar,Text, Scrollbar, END
 from moviepy.editor import AudioFileClip
 from ttkbootstrap import Style
-
+import yt_dlp
 
 def mp4_to_mp3(mp4, mp3):
     audio_clip = AudioFileClip(mp4)
@@ -12,63 +12,72 @@ def mp4_to_mp3(mp4, mp3):
     os.remove(mp4)
 
 
-def dowload(url, path, ext, playlist):
-    if ext == ".mp3":
-        only_audio = True
-    elif ext == ".mp4":
-        only_audio = False
-    else:
-        only_audio = True
-        ext = ".mp3"
-    if playlist:
-        playlist_generate = Playlist(url)
-        nombre_lista = playlist_generate.title
-        print(f"🚩 Descargando Lista: {nombre_lista}")
-        total = len(playlist_generate.video_urls)
-        ciclo = 0
-        for video_url in playlist_generate.video_urls:
-            ciclo += 1
-            try:
-                yt = YouTube(str(video_url))
+def download(url, path, ext=".mp4", playlist=False):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
-                video = yt.streams.filter(
-                    only_audio=only_audio, audio_codec='mp4a.40.2').first()
-                nombre_archivo = video.default_filename[:-4]
-                print(f"⌛ Iniciando Descarga: {nombre_archivo}")
-                destino = path
+    downloaded_file = {"filename": None}
 
-                salida = video.download(output_path=destino)
+    def progress_hook(d):
+        if d["status"] == "finished":
+            downloaded_file["filename"] = d["filename"]
 
-                nombre, extension = os.path.splitext(salida)
-                audio = nombre + ext
-                if only_audio:
-                    print("♫ Convirtiendo a mp3")
-                    mp4_to_mp3(salida, audio)
-                print(
-                    f"✔️ Descarga Completada {nombre_archivo} ---> {ciclo}/{total}")
-            except Exception as e:
-                print(f"Error: {e}")
-        print(f"🏁 {nombre_lista} ha sido descargado en {path}")
-        messagebox.showinfo(title="Descarga de Lista Completada",
-                            message=f"{nombre_lista} ha sido descargado en {path}")
-    else:
-        yt = YouTube(str(url))
+    def log_message(message):
+        text_widget.insert(END, message + "\n")
+        text_widget.see(END)
+        text_widget.update()
 
-        video = yt.streams.filter(
-            only_audio=only_audio, audio_codec='mp4a.40.2').first()
-        destino = path
-        print("⌛ Iniciando Descarga")
-        salida = video.download(output_path=destino)
-        nombre_archivo = video.default_filename[:-4]
-        print(
-            f"✔️ Descarga Completada {nombre_archivo}")
-        nombre, extension = os.path.splitext(salida)
-        audio = nombre + ext
-        if only_audio:
-            print("♫ Convirtiendo a mp3")
-            mp4_to_mp3(salida, audio)
-        messagebox.showinfo(title=f"Descarga {ext} Completada",
-                            message=f"{nombre_archivo} ha sido descargado en {path}")
+    root = Tk()
+    root.title("Progreso de la descarga")
+
+    text_widget = Text(root, wrap="word", height=20, width=60)
+    text_widget.pack(side="left", fill="both", expand=True)
+
+    scrollbar = Scrollbar(root, command=text_widget.yview)
+    scrollbar.pack(side="right", fill="y")
+
+    text_widget.configure(yscrollcommand=scrollbar.set)
+    log_message("⌛ Preparando descarga...")
+
+    ydl_opts = {
+        "format": "bv+ba/best",
+        "merge_output_format": "mp4",
+        "outtmpl": os.path.join(path, "%(title)s.%(ext)s"),
+        "quiet": True,
+        "noplaylist": not playlist,
+        "progress_hooks": [progress_hook],
+        "postprocessors": [{
+            "key": "FFmpegVideoConvertor",
+            "preferedformat": "mp4",
+        }],
+        "ffmpeg_location": "./Assets/ffmpeg/bin/ffmpeg.exe",
+    }
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            log_message(f"⌛ Iniciando descarga desde: {url}")
+            ydl.download([url])
+            mp4_file = downloaded_file["filename"]
+            mp4_file = os.path.splitext(mp4_file)[0][:-5] + ".mp4"
+            if mp4_file is None:
+                raise Exception("No se pudo obtener el archivo descargado.")
+            if ext == ".mp3":
+                mp3_file = os.path.splitext(mp4_file)[0] + ".mp3"
+                log_message(f"♫ Convirtiendo {mp4_file} a MP3...")
+                mp4_to_mp3(mp4_file, mp3_file)
+                log_message(f"✔️ Conversión completada: {mp3_file}")
+        if playlist:
+            final_message = f"🏁 Lista de reproducción descargada en: {path}"
+            log_message(final_message)
+            messagebox.showinfo("Descarga completada", final_message)
+        else:
+            final_message = f"✔️ Video descargado en máxima calidad en: {path}"
+            log_message(final_message)
+            messagebox.showinfo("Descarga completada", final_message)
+    except Exception as e:
+        error_message = f"Error durante la descarga: {e}"
+        log_message(error_message)
+    root.mainloop()
 
 
 def select_path(path_label):
@@ -84,8 +93,8 @@ def make_window():
     window.iconbitmap(default="icono.ico")
     window.geometry("430x125")
     window.resizable(False, False)
-    style_all = Style(theme="litera")
-    style_all.theme_use("litera")
+    style_all = Style(theme="superhero")
+    style_all.theme_use("superhero")
     frame = ttk.Frame(window, border=5)
     frame_url = ttk.LabelFrame(
         frame, padding=6, text="URL")
@@ -96,7 +105,7 @@ def make_window():
     url.pack(side="left", expand=True)
     selected_ext = StringVar()
     mp3 = ttk.Radiobutton(frame_url, text="MP3", variable=selected_ext,
-                          padding=2, value=(".mp3"))
+                          padding=2, value=(".mp3") )
     mp4 = ttk.Radiobutton(frame_url, text="MP4", variable=selected_ext,
                           padding=2, value=(".mp4"))
 
@@ -112,7 +121,7 @@ def make_window():
     ttk.Button(frame_path, text="Carpeta Destino",
                command=lambda: select_path(path_label), cursor="hand2").pack()
     dowloader = ttk.Button(frame_dw, text="Descargar", cursor="hand2", padding=(50, 15, 50, 15),
-                           command=lambda: dowload(url.get(),
+                           command=lambda: download(url.get(),
                                                    path=path_label.get(), ext=selected_ext.get(), playlist=playlist.get()))
     dowloader.grid(row=0, column=1)
 
