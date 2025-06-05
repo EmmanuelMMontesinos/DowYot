@@ -28,9 +28,7 @@ def main(page: ft.Page):
         page.update()
     def check_and_prompt_update():
         try:
-            # Simula que hay una actualización disponible
             if update_app.check_update():
-                # Crear el diálogo de confirmación
                 dialog = ft.AlertDialog(
                     title=ft.Text("Actualización disponible"),
                     content=ft.Text("Hay una nueva versión disponible. ¿Deseas actualizar?"),

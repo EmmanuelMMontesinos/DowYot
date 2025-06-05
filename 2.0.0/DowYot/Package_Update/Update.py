@@ -20,9 +20,12 @@ class UpdateApp:
         response = requests.get(url_latest, allow_redirects=True)
         if response.status_code == 200:
             latest_version = response.url.split("/")[-1]  # Extrae la versión de la URL
-            print(f"Última versión disponible: {latest_version}")
+            latest_version_float = latest_version.replace(".","")
+            version_app = self.version_app.replace(".","")
+            print(f"Versión actual: {float(version_app)}")
+            print(f"Última versión disponible: {float(latest_version_float)}")
             self.latest_version = latest_version
-            return latest_version != self.version_app
+            return float(latest_version_float) > float(version_app)
         else:
             print(f"Error al obtener la última versión: {response.status_code}")
             return False
