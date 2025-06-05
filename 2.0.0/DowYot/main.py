@@ -10,14 +10,14 @@ from Package_Update.Update import UpdateApp
 
 # Actualización
 name_app = "DowYot"
-version_app = "2.0.0"
+version_app = "2.0.1"
 url_repository = "https://github.com/EmmanuelMMontesinos/DowYot"
 
 update_app = UpdateApp(name_app, version_app, url_repository)
 
 
 current_dir = os.getcwd()
-ffmpeg_path = current_dir + "\\Assets\\ffmpeg\\bin\\ffmpeg.exe"
+ffmpeg_path = current_dir + "\\assets\\ffmpeg\\bin\\ffmpeg.exe"
 os.environ["IMAGEIO_FFMPEG_EXE"] = ffmpeg_path
 os.environ['PATH'] += ';' + ffmpeg_path
 
@@ -211,7 +211,7 @@ def main(page: ft.Page):
 
     page.add(layout)
     page.add(field_output)
-
+    
     page.title = "DowYot V2"
     page.window_height = 400
     page.window_width = 525
@@ -222,4 +222,4 @@ def main(page: ft.Page):
     page.update()
 
 
-ft.app(main, assets_dir="Assets")
+ft.app(target=main, assets_dir="assets")
