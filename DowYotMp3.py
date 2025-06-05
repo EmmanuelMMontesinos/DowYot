@@ -86,7 +86,7 @@ def select_path(path_label):
 
 
 def make_window():
-    print("Programado por @emmanuelmmontesinos")
+    print("Programado por @emmanuelmmontesinos\nVisita mi Web: emmanuelmmontesinos.dev")
     window = Tk()
     window.title("DowYot")
     # window.config(background="LightGray")
