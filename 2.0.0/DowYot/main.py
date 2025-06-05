@@ -211,6 +211,8 @@ def main(page: ft.Page):
     page.add(field_output)
     
     page.title = "DowYot V2"
+    icono = os.path.join("assets", "icono.ico")
+    # page.window_icon = icono
     page.window_height = 400
     page.window_width = 525
     page.window_resizable = False
