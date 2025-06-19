@@ -5,14 +5,36 @@ from moviepy.editor import AudioFileClip
 from ttkbootstrap import Style
 import yt_dlp
 
-def mp4_to_mp3(mp4, mp3):
+def mp4_to_mp3(mp4: str, mp3: str):
+    """
+    Convierte un archivo MP4 a MP3 usando MoviePy.
+
+    Args:
+        mp4 (str): Ruta del archivo MP4 a convertir.
+        mp3 (str): Ruta del archivo MP3 de salida.
+
+    Returns: No retorna nada.
+    """
     audio_clip = AudioFileClip(mp4)
     audio_clip.write_audiofile(mp3)
     audio_clip.close()
     os.remove(mp4)
 
 
-def download(url, path, ext=".mp4", playlist=False):
+def download(url: str, path: str, ext: str = ".mp4", playlist: bool = False):
+    """
+    Descarga un video o playlist de YouTube y lo convierte a MP3 si es necesario.
+    Muestra el progreso de la descarga en la interfaz gráfica.
+
+
+    Args:
+        url (str): URL del video o playlist de YouTube.
+        path (str): Ruta de la carpeta donde se descargará el archivo.
+        ext (str): Extensión del archivo a descargar. Por defecto es ".mp4".
+        playlist (bool): Indica si el link es una playlist. Por defecto es False.
+
+    Returns: No retorna nada.
+    """
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -86,6 +108,9 @@ def select_path(path_label):
 
 
 def make_window():
+    """
+    Crea la ventana principal de la aplicación.
+    """
     print("Programado por @emmanuelmmontesinos\nVisita mi Web: emmanuelmmontesinos.dev")
     window = Tk()
     window.title("DowYot")
