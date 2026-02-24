@@ -59,7 +59,7 @@ uvicorn==0.34.0
 watchdog==4.0.2
 watchfiles==1.0.4
 websockets==14.2
-yt-dlp==2025.1.15
+yt-dlp==2026.2.21
 certifi==2024.12.14
 charset-normalizer==3.4.1
 colorama==0.4.6
