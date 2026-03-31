@@ -34,7 +34,7 @@ proglog==0.1.10
 pydantic==2.10.5
 pydantic_core==2.27.2
 pydub==0.25.1
-Pygments==2.19.1
+Pygments==2.20.0
 pyperclip==1.8.2
 pypng==0.20220715.0
 python-dateutil==2.9.0.post0
