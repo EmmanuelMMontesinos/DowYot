@@ -29,7 +29,7 @@ moviepy==1.0.3
 numpy==2.2.2
 oauthlib==3.2.2
 packaging==23.2
-pillow==12.1.1
+pillow==12.2.0
 proglog==0.1.10
 pydantic==2.10.5
 pydantic_core==2.27.2
