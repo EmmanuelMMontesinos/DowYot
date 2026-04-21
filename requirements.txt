@@ -38,7 +38,7 @@ Pygments==2.20.0
 pyperclip==1.8.2
 pypng==0.20220715.0
 python-dateutil==2.9.0.post0
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 python-slugify==8.0.4
 pytube==15.0.0
 PyYAML==6.0.2
